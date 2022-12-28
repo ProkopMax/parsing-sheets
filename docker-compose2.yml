@@ -1,0 +1,51 @@
+---
+version: "3.7"
+
+services:
+
+  app2:
+    image: python:google2
+    build:
+      context: .
+      dockerfile: Dockerfile2
+    container_name: byte2-app
+    # restart: unless-stopped
+    env_file:
+      - db.env
+    # depends_on: 
+    #   backend:
+    #     condition: service_healthy
+#    volumes:
+#      - /home/tech/Project/content:/usr/share/nginx/html
+#    networks:
+#      - nginx_default
+
+#   backend:
+#     image: mysql:8
+#     container_name: byte-mysql
+#     env_file:
+#       - db.env
+#     healthcheck:
+#       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+#       interval: 5s
+#       timeout: 2s
+#       retries: 3
+#       start_period: 10s
+#     restart: unless-stopped
+# #    logging:
+# #      options:
+# #        max-size: "500M"
+# #        max-file: "2"
+#     volumes:
+#       - db:/var/lib/mysql
+#     ports:
+#       - 3306:3306
+# #    networks:
+# #      - nginx_default
+
+# networks:
+#   nginx_default:
+#     external: true
+ 
+# volumes:
+#   db: {}
