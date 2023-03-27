@@ -18,13 +18,8 @@ RUN apk add --no-cache --update \
 	libffi-dev \
     && rm -rf /var/cache/apk/*
 
-COPY ssl/RCA.crt /usr/local/share/ca-certificates/
-#RUN curl -sSL http://pki.rnb.com/certs/chain.cert.pem -o /usr/local/share/ca-certificates/rusnarbank-ca-bundle.crt
-RUN update-ca-certificates
-
 COPY requirements.txt ./
-RUN pip config set global.cert /usr/local/share/ca-certificates/RCA.crt \
-	&& pip install --no-cache-dir -r requirements.txt 
+RUN  pip install --no-cache-dir -r requirements.txt 
 
 COPY ./*.py .
 
