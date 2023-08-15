@@ -1,0 +1,5 @@
+FROM mysql:8
+
+ENV TZ=Europe/Moscow
+
+COPY docker.cnf /etc/mysql/conf.d/
