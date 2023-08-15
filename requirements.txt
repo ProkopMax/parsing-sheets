@@ -1,2 +1,3 @@
-requests
-mysql-connector-python
+flask==2.3.2
+requests==2.31.0
+pymysql==1.0.3

@@ -4,33 +4,33 @@ version: "3.7"
 services:
 
   app:
-    image: python:google
+    #image: python:latest
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: byte-app
-    # restart: unless-stopped
+      dockerfile: Dockerfile_app
+    #container_name: byte-app
+    #restart: unless-stopped
+    entrypoint: ["python", "main.py"]
     env_file:
-      - db.env
-    depends_on: 
-      backend:
+      - .env
+    ports:
+      - "127.0.0.1:8000:5000"
+    depends_on:
+      db:
         condition: service_healthy
-#    volumes:
-#      - /home/tech/Project/content:/usr/share/nginx/html
-#    networks:
-#      - nginx_default
 
-  backend:
-    image: mysql:8
-    container_name: byte-mysql
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile_db
     env_file:
-      - db.env
+      - .env
     healthcheck:
-      test: mysql bytedb -u byter --password=bytepass -e 'SELECT 1;'
-      interval: 5s
+      test: mysql $MYSQL_DATABASE -u $MYSQL_USER --password=$MYSQL_PASSWORD -e 'SELECT 1;'
+      interval: 3s
       timeout: 2s
-      retries: 3
-      start_period: 10s
+      retries: 2
+      start_period: 2s
     restart: unless-stopped
     logging:
       options:
@@ -38,14 +38,6 @@ services:
         max-file: "2"
     volumes:
       - db:/var/lib/mysql
-    ports:
-      - 3306:3306
-#    networks:
-#      - nginx_default
 
-networks:
-  nginx_default:
-    external: true
- 
 volumes:
   db: {}

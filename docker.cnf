@@ -1,0 +1,7 @@
+[mysqld]
+performance_schema_max_table_instances=400  
+table_definition_cache=400 #Cache
+performance_schema=off #Used to monitor the resource consumption and resource things of the MySQL server during a lower-level operation
+table_open_cache=64 #Open the cache of the table
+innodb_buffer_pool_chunk_size=64M #InnoDB buffer pool size adjustment operation block size
+innodb_buffer_pool_size=64M #InnoDB storage engine table data and index data maximum memory buffer size
