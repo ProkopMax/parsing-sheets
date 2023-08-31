@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <title>Discount store "Byte</title>
+</head>
+<body>
+<div class="container">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3>Search positions</h3>
+            </div>
+            <div class="col-md-6">
+                <form method="post">
+                    <div class="btn-group col-md-10 mr-2">
+                        <input type="text" name="search" required class="form-control">
+                        <input type="submit" value="Search" class="btn btn-primary">
+                    </div>
+                    <a class="btn btn-primary" href="/" role="button">Back</a>
+                </form>
+            </div>
+            <div class="panel-body mt-4">
+                <div class="table-responsive">
+                    {% if content | length != 0 %}
+                    <table id="search" class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            {% for i in labels %}
+                                <td>{{ i }}</td>
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in content %}
+                            <tr>
+                                {% for j in i %}
+                                    <td>{{ j }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div id="search">No search results.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+</body>
+</html>
