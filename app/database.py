@@ -34,6 +34,7 @@ def open_connection():
                user=MYSQL_USER,
                password=MYSQL_PASS,
                db=MYSQL_DB,
+               autocommit=True,
                )
     except pymysql.Error as error:
         print("Ошибка соединения с Mysql", error)
