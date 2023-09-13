@@ -1,4 +1,3 @@
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 /home/tech/parsing-sheets/app/database.py
 import pymysql
 import pymysql.cursors
 import sys
@@ -147,6 +146,7 @@ def view_all_fields(tableName):
            conn = None
            print("Соединение с Mysql закрыто")
 
+
 def select_content(tableName, search):
     """Execute SQL query."""
     global conn
@@ -166,3 +166,22 @@ def select_content(tableName, search):
            conn = None
            print("Соединение с Mysql закрыто")
 
+
+def count_data(tableName):
+    """Execute SQL query."""
+    global conn
+    try:
+        open_connection()
+        with conn.cursor() as cur:
+            cur.execute('SELECT COUNT(*) FROM {}'.format(tableName))
+            rowCount = cur.fetchone()[0]
+            conn.commit()
+            cur.close()
+        return rowCount
+    except pymysql.Error as error:
+        print("Ошибка: ", error)
+    finally:
+        if conn:
+           conn.close()
+           conn = None
+           print("Соединение с Mysql закрыто")
