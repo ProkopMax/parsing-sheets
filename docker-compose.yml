@@ -4,13 +4,11 @@ version: "3.7"
 services:
 
   app:
-    #image: python:latest
     build:
       context: .
       dockerfile: Dockerfile_app
-    #container_name: byte-app
-    #restart: unless-stopped
-    entrypoint: ["python", "main.py"]
+    restart: unless-stopped
+    entrypoint: [ "gunicorn", "-w", "2", "--bind", "0.0.0.0:5000", "main:app" ]
     env_file:
       - .env
     ports:
