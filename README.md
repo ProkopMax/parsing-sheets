@@ -1,4 +1,4 @@
-# Parsing google sheets
+# Example of parsing a Google table without api access
 ## 1. Install docker 
     https://docs.docker.com/engine/install/
 ## 2. Install docker-compose
