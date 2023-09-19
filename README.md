@@ -1,4 +1,6 @@
 # Example of parsing a Google table without api access
+![image](https://github.com/ProkopMax/parsing-sheets/assets/72852008/adbfc032-04b1-47ee-8615-7b247df0ce9e)
+
 ## 1. Install docker 
     https://docs.docker.com/engine/install/
 ## 2. Install docker-compose
@@ -13,7 +15,7 @@
 ## 5. View site 
     http://localhost:8000
 
-### Nginx + ssl 
+### Nginx + ssl + security
     1. Install nginx 
     2. Install certbot and generate cert for your domain name
-    3. Use and change file nginx/parsing-sheets.conf for your needs
+    3. Use and change files nginx/parsing-sheets.conf nginx/nginx.conf for your needs
