@@ -9,6 +9,9 @@
     docker-compose --version
 ## 3. Build and run app
     docker-compose up --force-recreate --build -d
+    
+    ### Clear build, run whithout cache and delete old images ###
+    docker-compose build --no-cache; docker-compose up -d; docker rmi $(docker images | grep none | awk {'print $3'})
 ## 4. Check docker containers
     docker ps -a | grep parsing
 ![image](https://github.com/ProkopMax/parsing-sheets/assets/72852008/b2c2a3d0-5039-4509-93b1-c79f740ee0c1)
