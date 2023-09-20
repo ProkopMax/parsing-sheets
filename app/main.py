@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, url_for
-from database import google_data, insert_main_data, view_all_content, view_all_fields, select_content, count_data, update_main_data
+from database import google_data, insert_main_data, view_all_content, view_all_fields, select_content, count_data
 from utils import get_time
 
 insert_main_data(google_data(), 'byte1')
