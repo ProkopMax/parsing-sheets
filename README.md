@@ -21,6 +21,8 @@
 ### Nginx + ssl + security
     1. Install nginx  
         https://www.nginx.com/resources/wiki/start/topics/tutorials/install/
+        
     2. Install certbot and generate cert for your domain name 
         https://certbot.eff.org/
+        
     3. Use and change files nginx/parsing-sheets.conf nginx/nginx.conf for your needs
