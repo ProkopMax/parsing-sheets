@@ -53,7 +53,7 @@ def insert_main_data(sql_data, tableName):
             sql_create_table = """CREATE TABLE {}(
                 id bigint(20) NOT NULL AUTO_INCREMENT,
                 Name CHAR(255) NOT NULL CHECK (Name <> ''),
-                Price int(9) NOT NULL CHECK (Price > '32'),
+                Price CHAR(15) NOT NULL CHECK (Price RLIKE',00$'),
                 PRIMARY KEY (id)
                 )""".format(tableName)
 
