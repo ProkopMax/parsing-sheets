@@ -1,0 +1,45 @@
+{{- if .Values.db.builtin }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: &db_name {{ include "parsing-sheets.fullname" . }}-{{ .Values.db.name }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "parsing-sheets.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "parsing-sheets.name" . }}-{{ .Values.db.name }}
+  replicas: {{ .Values.db.replicaCount }}
+  revisionHistoryLimit: {{ .Values.db.revisionHistoryLimit }}
+  minReadySeconds: {{ .Values.db.minReadySeconds }}
+  template:
+    metadata:
+      labels:
+        {{- include "parsing-sheets.labels" . | nindent 8 }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.db.terminationGracePeriodSeconds }}
+      containers:
+        - name: *db_name
+          image: {{ .Values.db.image.repository }}/{{ .Values.db.image.project }}/{{ .Values.db.image.name }}:{{ .Values.db.image.tag }}
+          imagePullPolicy: {{ .Values.db.image.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.db.port }}
+              name: {{ .Values.db.name }}-port
+          envFrom:
+            - secretRef:
+                name: {{ include "parsing-sheets.fullname" . }}
+          {{- with .Values.db.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - mountPath: {{ .Values.db.storage.mountPath }}
+              name: {{ .Values.db.storage.name }}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ .Values.db.storage.name }}
+    spec:
+      accessModes: {{ .Values.db.storage.accessModes }}
+      resources:
+        requests:
+          storage: {{ .Values.db.storage.size }}
+{{- end }}

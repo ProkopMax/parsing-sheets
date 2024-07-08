@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &app_name {{ include "parsing-sheets.fullname" . }}-{{ .Values.app.name }}
+  labels:
+    {{- include "parsing-sheets.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "parsing-sheets.selectorLabels" . | nindent 6 }}
+  {{- if not .Values.app.autoscaling.enabled }}
+  replicas: {{ .Values.app.replicaCount }}
+  revisionHistoryLimit: {{ .Values.app.revisionHistoryLimit }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "parsing-sheets.labels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: *app_name
+          image: {{ .Values.app.image.repository }}/{{ .Values.app.image.project }}/{{ .Values.app.image.name }}:{{ .Values.app.image.tag }}
+          imagePullPolicy: {{ .Values.app.image.imagePullPolicy }}
+          command:
+            {{ toYaml .Values.app.command.cmd | nindent 12 }}
+          ports:
+            - containerPort: {{ .Values.app.port }}
+              name: {{ .Values.app.name }}-port
+          envFrom:
+            - secretRef:
+                name: {{ include "parsing-sheets.fullname" . }}
+          {{- with .Values.app.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}

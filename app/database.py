@@ -36,11 +36,9 @@ def open_connection():
                db=MYSQL_DB,
                autocommit=True,
                )
+        print("Соединение с Mysql установлено")
     except pymysql.Error as error:
         print("Ошибка соединения с Mysql", error)
-        #sys.exit()
-    finally:
-        print("Соединение с Mysql установлено")
 
 def insert_main_data(sql_data, tableName):
     """Execute SQL query."""
@@ -79,13 +77,10 @@ def insert_main_data(sql_data, tableName):
 
             conn.commit()
             cur.close()
+            conn.close()
+            print("Соединение с Mysql закрыто")
     except pymysql.Error as error:
         print("Ошибка: ", error)
-    finally:
-        if conn:
-           conn.close()
-           conn = None
-           print("Соединение с Mysql закрыто")
 
 def view_data_db(tableName):
     """Execute SQL query."""
@@ -100,13 +95,10 @@ def view_data_db(tableName):
 
             conn.commit()
             cur.close()
+            conn.close()
+            print("Соединение с Mysql закрыто")
     except pymysql.Error as error:
         print("Ошибка: ", error)
-    finally:
-        if conn:
-           conn.close()
-           conn = None
-           print("Соединение с Mysql закрыто")
 
 def view_all_content(tableName):
     """Execute SQL query."""
@@ -118,14 +110,11 @@ def view_all_content(tableName):
             content = cur.fetchall()
             conn.commit()
             cur.close()
+            conn.close()
+            print("Соединение с Mysql закрыто")
         return content
     except pymysql.Error as error:
         print("Ошибка: ", error)
-    finally:
-        if conn:
-           conn.close()
-           conn = None
-           print("Соединение с Mysql закрыто")
 
 def view_all_fields(tableName):
     """Execute SQL query."""
@@ -138,15 +127,11 @@ def view_all_fields(tableName):
             fields = [l[0] for l in fields]
             conn.commit()
             cur.close()
+            conn.close()
+            print("Соединение с Mysql закрыто")
         return fields
     except pymysql.Error as error:
         print("Ошибка: ", error)
-    finally:
-        if conn:
-           conn.close()
-           conn = None
-           print("Соединение с Mysql закрыто")
-
 
 def select_content(tableName, search):
     """Execute SQL query."""
@@ -158,15 +143,11 @@ def select_content(tableName, search):
             content = cur.fetchall()
             conn.commit()
             cur.close()
+            conn.close()
+            print("Соединение с Mysql закрыто")
         return content
     except pymysql.Error as error:
         print("Ошибка: ", error)
-    finally:
-        if conn:
-           conn.close()
-           conn = None
-           print("Соединение с Mysql закрыто")
-
 
 def count_data(tableName):
     """Execute SQL query."""
@@ -178,11 +159,8 @@ def count_data(tableName):
             rowCount = cur.fetchone()[0]
             conn.commit()
             cur.close()
+            conn.close()
+            print("Соединение с Mysql закрыто")
         return rowCount
     except pymysql.Error as error:
         print("Ошибка: ", error)
-    finally:
-        if conn:
-           conn.close()
-           conn = None
-           print("Соединение с Mysql закрыто")

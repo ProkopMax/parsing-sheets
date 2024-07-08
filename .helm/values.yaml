@@ -1,0 +1,106 @@
+secret:
+  MYSQL_ROOT_PASSWORD: "secret"
+  MYSQL_DATABASE: "bytedb"
+  MYSQL_USER: "byter"
+  MYSQL_PASSWORD: "bytepass"
+  MYSQL_HOST: "parsing-sheets-db"
+  MYSQL_PORT: "3306"
+  LANG: "C.UTF-8"
+  GOOGLE_FILE_ID: "1psvvO5eftQYu4ktZ9g8pc70Owy_NPTPGdeuXvt363_0"
+  GOOGLE_URL_CSV: "https://docs.google.com/spreadsheets/d/{0}/export?format=csv"
+
+service:
+  typeApp: ClusterIP
+  typeProxy: ClusterIP
+  port: "5000"
+  portDb: "3306"
+  portProxy: "80"
+  nodePort: ""
+
+ingress:
+  enabled: true
+  className: system-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: dev-ca-issuer
+    cert-manager.io/common-name: app.prokop.local
+    cert-manager.io/subject-organizations: "home dev lab"
+    cert-manager.io/subject-countries: "RU"
+    cert-manager.io/subject-localities: "Moscow"
+    cert-manager.io/duration: "9125h"
+    cert-manager.io/renew-before: "360h"
+    cert-manager.io/usages: "server auth"
+    cert-manager.io/private-key-algorithm: RSA
+    cert-manager.io/private-key-encoding: "PKCS8"
+    cert-manager.io/private-key-size: "4096"
+    cert-manager.io/private-key-rotation-policy: Always
+  hosts:
+    - host: app.prokop.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: app-tls
+      hosts:
+        - app.prokop.local
+
+app:
+  name: app
+  autoscaling:
+    enabled: false
+  replicaCount: "1"
+  revisionHistoryLimit: "2"
+  image:
+    repository: registry.prokop.local
+    project: pet/parsing-sheets
+    name: parsing-sheets-app
+    tag: latest
+    imagePullPolicy: Always
+  command:
+    cmd:  
+      - "gunicorn"
+      - "-w"
+      - "1"
+      - "--bind"
+      - "0.0.0.0:5000"
+      - "main:app"
+  port: "5000"
+  resources:
+    limits:
+      cpu: "0.3"
+      memory: "256Mi"
+    requests:
+      cpu: "0.3"
+      memory: "256Mi"
+
+db:
+# Встроенная база данных mysql, для внешней false
+  builtin: true
+  name: db
+  replicaCount: "1"
+  revisionHistoryLimit: "2"
+  minReadySeconds: "1"
+  terminationGracePeriodSeconds: "1"
+  image:
+    repository: registry.prokop.local
+    project: pet/parsing-sheets
+    name: parsing-sheets-db
+    tag: latest
+    imagePullPolicy: IfNotPresent
+  port: "3306"
+  resources: {}
+    # limits:
+    #   cpu: "0.3"
+    #   memory: "512Mi"
+    # requests:
+    #   cpu: "0.2"
+    #   memory: "256Mi"
+  storage:
+    name: data
+    mountPath: /var/lib/mysql
+    size: "1Gi"
+    accessModes: [ "ReadWriteOnce" ]
+
+proxy:
+# Активация внутреннего прокси nginx
+  builtin: false
+  name: proxy

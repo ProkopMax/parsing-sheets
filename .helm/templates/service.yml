@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: &app_name {{ include "parsing-sheets.name" . }}-{{ .Values.app.name }}
+  labels:
+    {{- include "parsing-sheets.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.typeApp }}
+  ports:
+    - port: {{ .Values.service.port }}
+      name: {{ .Values.app.name }}-port
+      targetPort: {{ .Values.app.name }}-port
+      {{- if and (eq .Values.service.type "NodePort") .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+  selector:
+    {{- include "parsing-sheets.selectorLabels" . | nindent 4 }}
+---
+{{- if .Values.db.builtin }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: &db_name {{ include "parsing-sheets.name" . }}-{{ .Values.db.name }}
+  labels:
+    {{- include "parsing-sheets.labels" . | nindent 4 }}
+spec:
+  ports:
+  - port: {{ .Values.service.portDb }}
+    name: {{ .Values.db.name }}-port
+    targetPort: {{ .Values.db.name }}-port
+  clusterIP: None
+  selector:
+    {{- include "parsing-sheets.selectorLabels" . | nindent 4 }}
+{{- end }}
+---
+{{- if .Values.proxy.builtin }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: &proxy_name {{ include "parsing-sheets.name" . }}-{{ .Values.proxy.name }}
+  labels:
+    {{- include "parsing-sheets.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.typeProxy }}
+  ports:
+    - port: {{ .Values.service.portProxy }}
+      name: {{ .Values.proxy.name }}-port
+      targetPort: {{ .Values.proxy.name }}-port
+      {{- if and (eq .Values.service.type "NodePort") .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+  selector:
+    {{- include "parsing-sheets.selectorLabels" . | nindent 4 }}
+{{- end }}
