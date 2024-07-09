@@ -30,6 +30,10 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ include "parsing-sheets.fullname" . }}
+          livenessProbe:
+            {{- toYaml .Values.app.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.app.readinessProbe | nindent 12 }}
           {{- with .Values.app.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -70,10 +74,10 @@ spec:
           image: {{ .Values.proxy.image.name }}:{{ .Values.proxy.image.tag }}
           imagePullPolicy: {{ .Values.proxy.image.imagePullPolicy }}
           securityContext:
-            {{- toYaml .Values.proxy.securityContext | nindent 12 }}
+            {{- toYaml .Values.proxy.securityContext | nindent 12 }}       
           ports:
             - containerPort: {{ .Values.proxy.port }}
-              name: {{ .Values.proxy.name }}-port
+              name: {{ .Values.proxy.name }}-port               
           {{- with .Values.proxy.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

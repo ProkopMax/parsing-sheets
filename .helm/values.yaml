@@ -67,6 +67,14 @@ app:
       - "0.0.0.0:5000"
       - "main:app"
   port: "5000"
+  livenessProbe:
+    httpGet:
+      path: /
+      port: app-port
+  readinessProbe:
+    httpGet:
+      path: /
+      port: app-port
   resources:
     limits:
       cpu: "0.3"
