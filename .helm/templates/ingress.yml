@@ -2,7 +2,6 @@
 {{- $Name := include "parsing-sheets.name" . -}}
 {{- $ProxyName := .Values.proxy.name -}}
 {{- $ProxyPort := .Values.service.portProxy -}}
-{{- $ProxyEnable := .Values.proxy.builtin -}}
 {{- $AppName := .Values.app.name -}}
 {{- $AppPort := .Values.service.port -}}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -24,6 +23,7 @@ metadata:
 spec:
   ingressClassName: {{ .Values.ingress.className }}
   rules:
+    {{- if .Values.proxy.builtin -}}
     {{- range .Values.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
@@ -34,11 +34,39 @@ spec:
             pathType: {{ .pathType }}
             {{- end }}
             backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $Name }}-{{ $ProxyName }}
+                port:
+                  name: {{ $ProxyName }}-port
+              {{- else }}
+              serviceName: {{ $Name }}-{{ $ProxyName }}
+              servicePort: {{ $ProxyPort }}
+              {{- end }}
+          {{- end }}
+    {{- end }}
+    {{- else }}
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+            pathType: {{ .pathType }}
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
                 name: {{ $Name }}-{{ $AppName }}
                 port:
                   name: {{ $AppName }}-port
+              {{- else }}
+              serviceName: {{ $Name }}-{{ $AppName }}
+              servicePort: {{ $AppPort }}
+              {{- end }}
           {{- end }}
+    {{- end }}
     {{- end }}
   tls:
     {{- range .Values.ingress.tls }}

@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,7 +23,7 @@ spec:
           image: {{ .Values.app.image.repository }}/{{ .Values.app.image.project }}/{{ .Values.app.image.name }}:{{ .Values.app.image.tag }}
           imagePullPolicy: {{ .Values.app.image.imagePullPolicy }}
           command:
-            {{ toYaml .Values.app.command.cmd | nindent 12 }}
+            {{ toYaml .Values.app.command | nindent 12 }}
           ports:
             - containerPort: {{ .Values.app.port }}
               name: {{ .Values.app.name }}-port
@@ -33,3 +34,56 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+---
+{{- if .Values.proxy.builtin }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &proxy_name {{ include "parsing-sheets.fullname" . }}-{{ .Values.proxy.name }}
+  labels:
+    {{- include "parsing-sheets.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "parsing-sheets.selectorLabels" . | nindent 6 }}
+  {{- if not .Values.proxy.autoscaling.enabled }}
+  replicas: {{ .Values.proxy.replicaCount }}
+  revisionHistoryLimit: {{ .Values.proxy.revisionHistoryLimit }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "parsing-sheets.labels" . | nindent 8 }}
+    spec:
+      initContainers:
+        - name: {{ .Values.proxy.initcontainer.image.name }}
+          image: {{ .Values.proxy.initcontainer.image.name }}:{{ .Values.proxy.initcontainer.image.tag }}
+          imagePullPolicy: {{ .Values.proxy.initcontainer.image.imagePullPolicy }}
+          command:
+            {{ toYaml .Values.proxy.initcontainer.command | nindent 12 }}
+          {{- with .Values.proxy.initcontainer.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      containers:
+        - name: *proxy_name
+          image: {{ .Values.proxy.image.name }}:{{ .Values.proxy.image.tag }}
+          imagePullPolicy: {{ .Values.proxy.image.imagePullPolicy }}
+          securityContext:
+            {{- toYaml .Values.proxy.securityContext | nindent 12 }}
+          ports:
+            - containerPort: {{ .Values.proxy.port }}
+              name: {{ .Values.proxy.name }}-port
+          {{- with .Values.proxy.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.proxy.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.proxy.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

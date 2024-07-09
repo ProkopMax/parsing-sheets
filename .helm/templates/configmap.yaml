@@ -1,0 +1,14 @@
+---
+{{- if .Values.proxy.builtin }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "parsing-sheets.name" . }}-{{ .Values.proxy.name }}
+  labels:
+    {{- include "parsing-sheets.labels" . | nindent 4 }}
+data:
+{{- range $name, $value := .Values.configs.nginx }}
+  {{ $name }}: |
+{{ $value | indent 4 }}
+{{- end }}
+{{- end }}
