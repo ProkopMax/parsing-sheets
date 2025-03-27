@@ -6,12 +6,16 @@ import csv
 import io
 import urllib3
 from settings import MYSQL_HOST, MYSQL_PORT, MYSQL_DB, MYSQL_USER, MYSQL_PASS, GOOGLE_FILE_ID, GOOGLE_URL_CSV
+from utils import get_module_logger
+
+logg = get_module_logger(__name__)
 
 """Disable ssl warninngs"""
 urllib3.disable_warnings()
 
 def google_data():
     """Pull data from google file"""
+    logg.info(f'Pull data from google file...')
     try:
         lines = []
         url = GOOGLE_URL_CSV.format(GOOGLE_FILE_ID)
@@ -27,6 +31,7 @@ def google_data():
 
 def open_connection():
     """Connect to MySQL Database."""
+    logg.info(f'Connect to MySQL Database...')
     try:
         conn = pymysql.connect(
                host=MYSQL_HOST,
@@ -42,6 +47,7 @@ def open_connection():
 
 def insert_main_data(sql_data, tableName):
     """Execute SQL query."""
+    logg.info(f'Insert main data to sql...')
     try:
         google_data()
         conn = open_connection()
@@ -83,6 +89,7 @@ def insert_main_data(sql_data, tableName):
 
 def view_data_db(tableName):
     """Execute SQL query."""
+    logg.info(f'Find data in sql...')
     try:
         conn = open_connection()
         with conn.cursor() as cur:
@@ -100,6 +107,7 @@ def view_data_db(tableName):
 
 def view_all_content(tableName):
     """Execute SQL query."""
+    logg.info(f'View all data in sql...')
     try:
         conn = open_connection()
         with conn.cursor() as cur:
@@ -115,6 +123,7 @@ def view_all_content(tableName):
 
 def view_all_fields(tableName):
     """Execute SQL query."""
+    logg.info(f'View all fields in sql...')
     try:
         conn = open_connection()
         with conn.cursor() as cur:
@@ -131,6 +140,7 @@ def view_all_fields(tableName):
 
 def select_content(tableName, search):
     """Execute SQL query."""
+    logg.info(f'Select data in sql...')
     try:
         conn = open_connection()
         with conn.cursor() as cur:
@@ -146,6 +156,7 @@ def select_content(tableName, search):
 
 def count_data(tableName):
     """Execute SQL query."""
+    logg.info(f'Count data in sql...')
     try:
         conn = open_connection()
         with conn.cursor() as cur:
