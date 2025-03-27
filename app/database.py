@@ -27,7 +27,6 @@ def google_data():
 
 def open_connection():
     """Connect to MySQL Database."""
-    global conn
     try:
         conn = pymysql.connect(
                host=MYSQL_HOST,
@@ -37,15 +36,15 @@ def open_connection():
                autocommit=True,
                )
         print("Соединение с Mysql установлено")
+        return conn
     except pymysql.Error as error:
         print("Ошибка соединения с Mysql", error)
 
 def insert_main_data(sql_data, tableName):
     """Execute SQL query."""
-    global conn
     try:
         google_data()
-        open_connection()
+        conn = open_connection()
         with conn.cursor() as cur:
             sql_drop = " DROP TABLE IF EXISTS {} ".format(tableName)
             sql_create_table = """CREATE TABLE {}(
@@ -84,9 +83,8 @@ def insert_main_data(sql_data, tableName):
 
 def view_data_db(tableName):
     """Execute SQL query."""
-    global conn
     try:
-        open_connection()
+        conn = open_connection()
         with conn.cursor() as cur:
             cur.execute('SELECT * FROM {}'.format(tableName))
             rowCount = cur.fetchall()
@@ -102,9 +100,8 @@ def view_data_db(tableName):
 
 def view_all_content(tableName):
     """Execute SQL query."""
-    global conn
     try:
-        open_connection()
+        conn = open_connection()
         with conn.cursor() as cur:
             cur.execute('SELECT * FROM {}'.format(tableName))
             content = cur.fetchall()
@@ -118,9 +115,8 @@ def view_all_content(tableName):
 
 def view_all_fields(tableName):
     """Execute SQL query."""
-    global conn
     try:
-        open_connection()
+        conn = open_connection()
         with conn.cursor() as cur:
             cur.execute('SHOW FIELDS FROM {}'.format(tableName))
             fields = cur.fetchall()
@@ -135,9 +131,8 @@ def view_all_fields(tableName):
 
 def select_content(tableName, search):
     """Execute SQL query."""
-    global conn
     try:
-        open_connection()
+        conn = open_connection()
         with conn.cursor() as cur:
             cur.execute("SELECT * FROM {0} WHERE Name LIKE '%{1}%' OR Price LIKE '%{1}%'".format(tableName, search))
             content = cur.fetchall()
@@ -151,9 +146,8 @@ def select_content(tableName, search):
 
 def count_data(tableName):
     """Execute SQL query."""
-    global conn
     try:
-        open_connection()
+        conn = open_connection()
         with conn.cursor() as cur:
             cur.execute('SELECT COUNT(*) FROM {}'.format(tableName))
             rowCount = cur.fetchone()[0]
